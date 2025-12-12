@@ -5,6 +5,7 @@ import RiskScoreBadge from "@/components/RiskScoreBadge";
 import CountdownTimer from "@/components/CountdownTimer";
 import ActionCard from "@/components/ActionCard";
 import { AlertCircle, RotateCcw, CheckCircle2 } from "lucide-react";
+import { scanIdentityDemo } from "@/services/securityScanner";
 
 /**
  * Smart Reversal Window MVP - Home Page (Absher Branded)
@@ -64,6 +65,10 @@ export default function Home() {
   const [undoWindowSeconds, setUndoWindowSeconds] = useState(0);
   const [riskScore, setRiskScore] = useState(0);
   const [actionTimestamp, setActionTimestamp] = useState<string>("");
+  const [idNumber, setIdNumber] = useState("");
+const [scanLoading, setScanLoading] = useState(false);
+const [scanMessage, setScanMessage] = useState<string | null>(null);
+
 
   // Simulate risk score calculation based on time of day and device
   const calculateRiskScore = (baseScore: number) => {
@@ -120,6 +125,22 @@ export default function Home() {
     setUndoWindowSeconds(0);
     setActionTimestamp("");
   };
+const handleSecurityScan = async () => {
+  setScanLoading(true);
+  setScanMessage(null);
+
+  try {
+    const res = await scanIdentityDemo(idNumber);
+
+    if (!res.success) {
+      setScanMessage(res.message);
+    } else {
+      setScanMessage(`النتيجة: ${res.data.label}`);
+    }
+  } finally {
+    setScanLoading(false);
+  }
+};
 
   const handleTimerComplete = () => {
     if (actionState === "pending") {
@@ -318,6 +339,27 @@ export default function Home() {
                   </Card>
                 </>
               )}
+<Card className="p-6 bg-white border-2 border-border">
+  <h3 className="font-semibold mb-3 text-right text-foreground">المسح الأمني للهوية</h3>
+
+  <div className="flex flex-col gap-3">
+    <input
+      value={idNumber}
+      onChange={(e) => setIdNumber(e.target.value)}
+      placeholder="أدخل رقم الهوية"
+      className="w-full rounded-md border border-border bg-white px-3 py-2 text-right"
+      inputMode="numeric"
+    />
+
+    <Button onClick={handleSecurityScan} disabled={scanLoading} className="gap-2">
+      {scanLoading ? "جارٍ المسح..." : "بدء المسح الأمني"}
+    </Button>
+
+    {scanMessage && (
+      <p className="text-sm text-right text-muted-foreground">{scanMessage}</p>
+    )}
+  </div>
+</Card>
 
               {/* Info Card */}
               <Card className="p-6 bg-white/80 border-2 border-border">
