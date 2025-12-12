@@ -149,7 +149,8 @@ export default function Home() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <img 
-                  src="/images/absher-logo.jpg" 
+                  src={`${import.meta.env.BASE_URL}images/absher-logo.jpg`}
+
                   alt="Absher Logo" 
                   className="h-12 w-12 object-contain"
                 />
