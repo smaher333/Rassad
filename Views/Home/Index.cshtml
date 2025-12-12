@@ -1,0 +1,601 @@
+@{
+    ViewData["Title"] = "أبشر - نافذة الإلغاء الذكية";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Tajawal', sans-serif;
+            background: #eef0f4;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .absher-logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .absher-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: #2c3e50;
+        }
+
+        .header-text p {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .scanner-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .scanner-card p {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1e5ba8;
+            box-shadow: 0 0 10px rgba(30, 91, 168, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .cancel-window {
+            background: linear-gradient(135deg, #d5f4e6 0%, #c8f0e0 100%);
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cancel-window h3 {
+            color: #27ae60;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: 900;
+            color: #27ae60;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+        }
+
+        .cancel-window p {
+            color: #27ae60;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .title-bar {
+            width: 4px;
+            height: 25px;
+            background: #27ae60;
+            border-radius: 2px;
+        }
+
+        .section-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .operations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .operation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .operation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .op-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .op-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .op-icon.high {
+            background: #fadbd8;
+        }
+
+        .op-icon.medium {
+            background: #fdebd0;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-danger {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .badge-warning {
+            background: #fdebd0;
+            color: #f39c12;
+        }
+
+        .op-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .op-description {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .op-timer {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e5ba8;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .risk-result {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            display: none;
+        }
+
+        .risk-result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .risk-level {
+            font-size: 32px;
+            font-weight: 900;
+            margin: 15px 0;
+        }
+
+        .risk-high {
+            color: #e74c3c;
+        }
+
+        .risk-low {
+            color: #27ae60;
+        }
+
+        @@media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .operations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                @*<div class="absher-logo">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='%231e5ba8' width='200' height='200' rx='20'/%3E%3Ctext x='50%25' y='50%25' font-size='120' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'%3Eأ%3C/text%3E%3C/svg%3E" alt="أبشر">
+                </div>*@
+                <div class="header-text">
+                    <h1>أبشر</h1>
+                    <p>أفراد | نافذة الإلغاء الذكية</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                @*<div class="card scanner-card">*@
+                <div class="left-panel" style="display: flex; justify-content: center;">
+                    <h2>🔍 ماسح أمني متقدم</h2>
+                    <p>مسح هوية الشخص والتحقق من بيانات وزارة الداخلية</p>
+                    <div class="input-group">
+                        <input type="text" id="idNumber" placeholder="أدخل رقم الهوية" inputmode="numeric" maxlength="20">
+                    </div>
+                    <div class="loading" id="scanLoading">
+                        <div class="spinner"></div>
+                        <p>جاري المسح...</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="scanIdentity()" id="scanBtn">بدء المسح الأمني</button>
+
+                    <div class="risk-result" id="riskResult">
+                        <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 10px;">مستوى الخطورة</p>
+                        <div class="risk-level" id="riskLevel"></div>
+                    </div>
+                </div>
+
+                    @*<div id="cancelWindow" class="card cancel-window" style="display: none;">
+            <h3>⏱️ نافذة الإلغاء نشطة</h3>
+            <div class="timer" id="timer">02:00:00</div>
+            <p>يمكنك التراجع عن العملية <strong id="operationName"></strong> قبل انتهاء الوقت المحدد.</p>
+            <button class="btn btn-danger" onclick="cancelOperation()">إلغاء العملية فوراً</button>
+        </div>*@
+                </div>
+
+            @*<div class="right-panel">
+                <div class="section-title">
+                    <div class="title-bar"></div>
+                    <h2>العمليات الحساسة</h2>
+                </div>
+
+                <div class="operations-grid" id="operationsGrid"></div>
+            </div>*@
+        </div>
+    </div>
+
+    <script>
+        const operations = [
+            { id: 'transfer', title: 'نقل الملكية', description: 'نقل ملكية المركبة إلى شخص آخر', risk: 'high', icon: '⚠️', duration: 2 * 60 * 60 * 1000 },
+            { id: 'device', title: 'تفويض جهاز جديد', description: 'إضافة جهاز جديد لتطبيق أبشر على هاتفك', risk: 'medium', icon: '📱', duration: 1 * 60 * 60 * 1000 },
+            { id: 'export', title: 'تصدير البيانات', description: 'تصدير جميع المستندات والسجلات', risk: 'medium', icon: '📄', duration: 1 * 60 * 60 * 1000 },
+            { id: 'revoke', title: 'إلغاء الوصول', description: 'إزالة الوصول لمستخدم مفوض', risk: 'medium', icon: '👤', duration: 30 * 60 * 1000 }
+        ];
+
+        let activeOperation = null;
+        let cancelEndTime = null;
+        let timerInterval = null;
+
+        window.addEventListener('load', () => {
+            renderOperations();
+            loadState();
+            document.getElementById('idNumber').focus();
+        });
+
+        function renderOperations() {
+            const grid = document.getElementById('operationsGrid');
+            grid.innerHTML = operations.map(op => {
+                const riskClass = op.risk === 'high' ? 'danger' : 'warning';
+                const riskText = op.risk === 'high' ? 'مخاطرة عالية' : 'مخاطرة متوسطة';
+                const durationText = op.duration === 2 * 60 * 60 * 1000 ? 'ساعتان' : op.duration === 1 * 60 * 60 * 1000 ? 'ساعة واحدة' : '30 دقيقة';
+
+                return `
+                    <div class="operation-card">
+                        <div class="op-header">
+                            <div class="op-icon ${op.risk}">${op.icon}</div>
+                            <span class="badge badge-${riskClass}">${riskText}</span>
+                        </div>
+                        <div class="op-title">${op.title}</div>
+                        <div class="op-description">${op.description}</div>
+                        <div class="op-timer">⏱️ وقت الإلغاء: ${durationText}</div>
+                        <button class="btn btn-primary" onclick="startOperation('${op.id}')" ${activeOperation ? 'disabled' : ''}>
+                            ${activeOperation === op.id ? 'العملية جارية...' : 'بدء الخدمة'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startOperation(opId) {
+            const op = operations.find(o => o.id === opId);
+            const endTime = Date.now() + op.duration;
+
+            activeOperation = opId;
+            cancelEndTime = endTime;
+
+            localStorage.setItem('activeOperation', opId);
+            localStorage.setItem('cancelEndTime', endTime.toString());
+
+            updateUI();
+            startTimer();
+        }
+
+        function cancelOperation() {
+            activeOperation = null;
+            cancelEndTime = null;
+
+            localStorage.removeItem('activeOperation');
+            localStorage.removeItem('cancelEndTime');
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            updateUI();
+        }
+
+        function updateUI() {
+            renderOperations();
+            const cancelWindow = document.getElementById('cancelWindow');
+            if (activeOperation) {
+                const op = operations.find(o => o.id === activeOperation);
+                document.getElementById('operationName').textContent = op.title;
+                cancelWindow.style.display = 'block';
+            } else {
+                cancelWindow.style.display = 'none';
+            }
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                const now = Date.now();
+                const diff = cancelEndTime - now;
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    cancelOperation();
+                } else {
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    document.getElementById('timer').textContent = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function loadState() {
+            const storedOp = localStorage.getItem('activeOperation');
+            const storedEndTime = localStorage.getItem('cancelEndTime');
+
+            if (storedOp && storedEndTime) {
+                const endTime = parseInt(storedEndTime);
+                if (Date.now() < endTime) {
+                    activeOperation = storedOp;
+                    cancelEndTime = endTime;
+                    updateUI();
+                    startTimer();
+                } else {
+                    localStorage.removeItem('activeOperation');
+                    localStorage.removeItem('cancelEndTime');
+                }
+            }
+        }
+
+        async function scanIdentity() {
+            const idNumber = document.getElementById('idNumber').value.trim();
+
+            if (!idNumber) {
+                alert('يرجى إدخال رقم الهوية');
+                return;
+            }
+
+            if (idNumber.length < 10) {
+                alert('رقم الهوية يجب أن يكون 10 أرقام على الأقل');
+                return;
+            }
+
+            document.getElementById('scanLoading').classList.add('show');
+            document.getElementById('scanBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/securityscanner/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idNumber: idNumber })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const riskLevel = result.data.riskLevel;
+                    const riskElement = document.getElementById('riskLevel');
+                    const riskResult = document.getElementById('riskResult');
+                    
+                    if (riskLevel === 'عالية' || riskLevel === 'حرجة') {
+                        riskElement.textContent = 'عالية';
+                        riskElement.className = 'risk-level risk-high';
+                    } else {
+                        riskElement.textContent = 'منخفضة';
+                        riskElement.className = 'risk-level risk-low';
+                    }
+                    
+                    riskResult.classList.add('show');
+                } else {
+                    alert('❌ خطأ: ' + result.message);
+                }
+            } catch (error) {
+                alert('❌ خطأ: ' + error.message);
+            } finally {
+                document.getElementById('scanLoading').classList.remove('show');
+                document.getElementById('scanBtn').disabled = false;
+            }
+        }
+
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('idNumber') === document.activeElement) {
+                scanIdentity();
+            }
+        });
+    </script>
+</body>
+</html>
