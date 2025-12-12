@@ -1,19 +1,19 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import RiskScoreBadge from "@/components/RiskScoreBadge";
 import CountdownTimer from "@/components/CountdownTimer";
 import ActionCard from "@/components/ActionCard";
-import { AlertCircle, RotateCcw, CheckCircle2 } from "lucide-react";
+import { RotateCcw, CheckCircle2 } from "lucide-react";
 import { scanIdentityDemo } from "@/services/securityScanner";
 
 /**
  * Smart Reversal Window MVP - Home Page (Absher Branded)
- * 
+ *
  * Demonstrates the core concept of a time-limited undo window for sensitive actions.
  * Users can simulate performing a sensitive action and either confirm or reverse it
  * within the undo window.
- * 
+ *
  * Design: Modern Security-First with Absher Government Portal Branding
  * - Clean, professional layout with asymmetric emphasis
  * - Animated countdown timer with visual progress
@@ -65,29 +65,30 @@ export default function Home() {
   const [undoWindowSeconds, setUndoWindowSeconds] = useState(0);
   const [riskScore, setRiskScore] = useState(0);
   const [actionTimestamp, setActionTimestamp] = useState<string>("");
-  const [idNumber, setIdNumber] = useState("");
-const [scanLoading, setScanLoading] = useState(false);
-const [scanMessage, setScanMessage] = useState<string | null>(null);
 
+  // Security Scan UI state
+  const [idNumber, setIdNumber] = useState("");
+  const [scanLoading, setScanLoading] = useState(false);
+  const [scanMessage, setScanMessage] = useState<string | null>(null);
 
   // Simulate risk score calculation based on time of day and device
   const calculateRiskScore = (baseScore: number) => {
     const hour = new Date().getHours();
     const isOffHours = hour < 6 || hour > 22; // 10 PM - 6 AM
     const isWeekend = new Date().getDay() === 0 || new Date().getDay() === 6;
-    
+
     let adjustedScore = baseScore;
-    
+
     // Increase risk if action happens during off-hours
     if (isOffHours) adjustedScore += 15;
-    
+
     // Increase risk if action happens on weekend
     if (isWeekend) adjustedScore += 10;
-    
+
     // Simulate device risk (random for demo)
     const deviceRisk = Math.floor(Math.random() * 20);
     adjustedScore += deviceRisk;
-    
+
     return Math.min(adjustedScore, 100);
   };
 
@@ -125,22 +126,23 @@ const [scanMessage, setScanMessage] = useState<string | null>(null);
     setUndoWindowSeconds(0);
     setActionTimestamp("");
   };
-const handleSecurityScan = async () => {
-  setScanLoading(true);
-  setScanMessage(null);
 
-  try {
-    const res = await scanIdentityDemo(idNumber);
+  const handleSecurityScan = async () => {
+    setScanLoading(true);
+    setScanMessage(null);
 
-    if (!res.success) {
-      setScanMessage(res.message);
-    } else {
-      setScanMessage(`النتيجة: ${res.data.label}`);
+    try {
+      const res = await scanIdentityDemo(idNumber);
+
+      if (!res.success) {
+        setScanMessage(res.message);
+      } else {
+        setScanMessage(`النتيجة: ${res.data.label}`);
+      }
+    } finally {
+      setScanLoading(false);
     }
-  } finally {
-    setScanLoading(false);
-  }
-};
+  };
 
   const handleTimerComplete = () => {
     if (actionState === "pending") {
@@ -151,35 +153,32 @@ const handleSecurityScan = async () => {
   const currentAction = selectedAction ? SENSITIVE_ACTIONS[selectedAction] : null;
 
   return (
-    <div 
+    <div
       className="min-h-screen"
       style={{
-        backgroundImage: "url('/images/absher-background.jpg')",
+        backgroundImage: `url('${import.meta.env.BASE_URL}images/absher-background.jpg')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed"
+        backgroundAttachment: "fixed",
       }}
     >
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-white/95 backdrop-blur-sm"></div>
-      
+
       <div className="relative z-10">
         {/* Header */}
         <header className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-0 z-20">
           <div className="container py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <img 
+                <img
                   src={`${import.meta.env.BASE_URL}images/absher-logo.jpg`}
-
-                  alt="Absher Logo" 
+                  alt="Absher Logo"
                   className="h-12 w-12 object-contain"
                 />
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">نافذة الإلغاء الذكية</h1>
-                  <p className="text-sm text-muted-foreground">
-                    منصة أبشر - حماية العمليات الحساسة
-                  </p>
+                  <p className="text-sm text-muted-foreground">منصة أبشر - حماية العمليات الحساسة</p>
                 </div>
               </div>
               <div className="text-right">
@@ -209,9 +208,7 @@ const handleSecurityScan = async () => {
                           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                             {action.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            {action.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground mt-2">{action.description}</p>
                           <div className="mt-4 flex items-center justify-between">
                             <span className="text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                               ← اضغط للتنفيذ
@@ -241,28 +238,15 @@ const handleSecurityScan = async () => {
                   {actionState === "pending" && (
                     <div className="space-y-6">
                       <Card className="p-8 bg-white border-2 border-border">
-                        <CountdownTimer
-                          totalSeconds={undoWindowSeconds}
-                          onComplete={handleTimerComplete}
-                          isActive={true}
-                        />
+                        <CountdownTimer totalSeconds={undoWindowSeconds} onComplete={handleTimerComplete} isActive={true} />
                       </Card>
 
                       <div className="flex gap-3 justify-center">
-                        <Button
-                          onClick={handleReverse}
-                          variant="outline"
-                          size="lg"
-                          className="gap-2 border-2"
-                        >
+                        <Button onClick={handleReverse} variant="outline" size="lg" className="gap-2 border-2">
                           <RotateCcw className="w-4 h-4" />
                           إلغاء العملية
                         </Button>
-                        <Button
-                          onClick={handleConfirm}
-                          size="lg"
-                          className="gap-2 bg-primary hover:bg-primary/90"
-                        >
+                        <Button onClick={handleConfirm} size="lg" className="gap-2 bg-primary hover:bg-primary/90">
                           <CheckCircle2 className="w-4 h-4" />
                           تأكيد العملية
                         </Button>
@@ -276,12 +260,7 @@ const handleSecurityScan = async () => {
 
                   {(actionState === "confirmed" || actionState === "reversed") && (
                     <div className="flex justify-center">
-                      <Button
-                        onClick={handleReset}
-                        variant="outline"
-                        size="lg"
-                        className="gap-2"
-                      >
+                      <Button onClick={handleReset} variant="outline" size="lg" className="gap-2">
                         <RotateCcw className="w-4 h-4" />
                         جرب عملية أخرى
                       </Button>
@@ -309,7 +288,12 @@ const handleSecurityScan = async () => {
                         <span className="text-muted-foreground">عامل الوقت</span>
                       </div>
                       <div className="flex justify-between items-center pb-3 border-b border-border">
-                        <span className="font-semibold">+{riskScore - SENSITIVE_ACTIONS[selectedAction!].riskBase - (new Date().getHours() < 6 || new Date().getHours() > 22 ? 15 : 0)}</span>
+                        <span className="font-semibold">
+                          +
+                          {riskScore -
+                            SENSITIVE_ACTIONS[selectedAction!].riskBase -
+                            (new Date().getHours() < 6 || new Date().getHours() > 22 ? 15 : 0)}
+                        </span>
                         <span className="text-muted-foreground">عامل الجهاز</span>
                       </div>
                       <div className="flex justify-between items-center pt-3">
@@ -323,9 +307,7 @@ const handleSecurityScan = async () => {
                     <h3 className="font-semibold mb-4 text-right text-foreground">مدة نافذة الإلغاء</h3>
                     <div className="space-y-2 text-right">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-semibold">
-                          {Math.floor(undoWindowSeconds / 60)} دقيقة
-                        </span>
+                        <span className="font-mono font-semibold">{Math.floor(undoWindowSeconds / 60)} دقيقة</span>
                         <span className="text-sm text-muted-foreground">المدة</span>
                       </div>
                       <p className="text-xs text-muted-foreground pt-2 border-t border-border mt-3">
@@ -339,27 +321,27 @@ const handleSecurityScan = async () => {
                   </Card>
                 </>
               )}
-<Card className="p-6 bg-white border-2 border-border">
-  <h3 className="font-semibold mb-3 text-right text-foreground">المسح الأمني للهوية</h3>
 
-  <div className="flex flex-col gap-3">
-    <input
-      value={idNumber}
-      onChange={(e) => setIdNumber(e.target.value)}
-      placeholder="أدخل رقم الهوية"
-      className="w-full rounded-md border border-border bg-white px-3 py-2 text-right"
-      inputMode="numeric"
-    />
+              {/* Security Scan Card */}
+              <Card className="p-6 bg-white border-2 border-border">
+                <h3 className="font-semibold mb-3 text-right text-foreground">المسح الأمني للهوية</h3>
 
-    <Button onClick={handleSecurityScan} disabled={scanLoading} className="gap-2">
-      {scanLoading ? "جارٍ المسح..." : "بدء المسح الأمني"}
-    </Button>
+                <div className="flex flex-col gap-3">
+                  <input
+                    value={idNumber}
+                    onChange={(e) => setIdNumber(e.target.value)}
+                    placeholder="أدخل رقم الهوية"
+                    className="w-full rounded-md border border-border bg-white px-3 py-2 text-right"
+                    inputMode="numeric"
+                  />
 
-    {scanMessage && (
-      <p className="text-sm text-right text-muted-foreground">{scanMessage}</p>
-    )}
-  </div>
-</Card>
+                  <Button onClick={handleSecurityScan} disabled={scanLoading} className="gap-2">
+                    {scanLoading ? "جارٍ المسح..." : "بدء المسح الأمني"}
+                  </Button>
+
+                  {scanMessage && <p className="text-sm text-right text-muted-foreground">{scanMessage}</p>}
+                </div>
+              </Card>
 
               {/* Info Card */}
               <Card className="p-6 bg-white/80 border-2 border-border">
