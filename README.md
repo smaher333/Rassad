@@ -1,5 +1,6 @@
-<img width="539" height="554" alt="Screenshot 1447-06-22 at 9 59 25 AM" src="https://github.com/user-attachments/assets/4b05b61d-5c1d-4c1a-9171-c9489b6226cf" />
-<img width="539" height="554" alt="Screenshot 1447-06-22 at 10 13 34 AM" src="https://github.com/user-attachments/assets/2f04baf8-71d7-4983-af4a-5b2ad6923791" />```md
+<img width="539" height="554" alt="Screenshot 1447-06-22 at 10 13 34 AM" src="https://github.com/user-attachments/assets/2f04baf8-71d7-4983-af4a-5b2ad6923791" />
+
+```md
 # Rassad – Smart Reversal Window
 
 Rassad is an AI-inspired security solution designed to protect users from unintended or risky actions in sensitive digital services by introducing a **Smart Reversal Window**.
@@ -42,6 +43,8 @@ This version is built using **ASP.NET Core MVC (.NET 8)** and includes:
 
 ⚠️ **Note:** GitHub Pages does not support backend technologies such as ASP.NET.  
 For this reason, this part of the project is designed to run **locally or on a cloud hosting service**.
+
+<img width="539" height="554" alt="Screenshot 1447-06-22 at 9 59 25 AM" src="https://github.com/user-attachments/assets/4b05b61d-5c1d-4c1a-9171-c9489b6226cf" />
 
 ### ▶️ Run Locally
 ```bash
